@@ -1,0 +1,2 @@
+cp formular.html /var/www/html/formular.php
+cp graf.png /var/www/html/
