@@ -25,9 +25,11 @@
                 if( $_GET["date"] || $_GET["time"] || $_GET["quantity"] ) {
                     $tdate = $_GET["date"];
                     $ttime = $_GET["time"];
-                    $tquant = $_GET["quantity"];
+                    $tstamp = $tdate. ' '. $ttime;
+                    $tquant = $_GET["quantity"]. 'p';
+                    $entry = array($tstamp, $tquant);
                     echo $tdate. " ". $ttime. " přiloženo ". $tquant. "pytlů";
-                    insert_entry($tdate. " ". $ttime. " ". $tquant. "p");
+                    insert_entry($entry);
                     echo "</body></html>";
                     exit();
                 }
@@ -36,7 +38,14 @@
                 if( $_GET["tstamp"] || $_GET["quantity"] ) {
                     $tstamp = $_GET["tstamp"];
                     $tquant = $_GET["quantity"];
+                    $entry = array($tstamp, $tquant);
                     echo 'Mažu položku "'. $tstamp. ' '. $tquant. '"';
+                    if (delete_entry($entry)) {
+                        echo ' OK';
+                    }
+                    else {
+                        echo " Can't find entry .. ERROR";
+                    }
                     echo "</body></html>";
                     exit();
                 }
@@ -75,8 +84,8 @@
             <?php
                 $entries = sort_entries_by_time(load_entries());
                 foreach ($entries as $entry) {
-                    echo '<form method="get">';
-                    echo $entry[0]. ' '. $entry[1]. ' ';
+                    echo '<form method="get">"';
+                    echo $entry[0]. ' '. $entry[1]. '"';
                     echo '<input type="hidden" name="action" value="delete"> ';
                     echo '<input type="hidden" name="tstamp" value="'. $entry[0]. '"> ';
                     echo '<input type="hidden" name="quantity" value="'. $entry[1]. '"> ';

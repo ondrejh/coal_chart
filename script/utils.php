@@ -21,11 +21,12 @@ function insert_entry($entry){
         echo "<br>Neexistuje adresar data!";
     }
     else {
+        $estr = $entry[0]. ' '. $entry[1];
         if (!file_exists(FILE)) {
             echo "<br>vytvarim soubor";
             $myfile = fopen(FILE, 'w');
             if ($myfile) {
-                fwrite($myfile, ($entry. PHP_EOL));
+                fwrite($myfile, ($estr. PHP_EOL));
                 fclose($myfile);
             }
             else {
@@ -34,7 +35,7 @@ function insert_entry($entry){
         }
         else {
             $myfile = fopen(FILE, 'a');
-            fwrite($myfile, ($entry. PHP_EOL));
+            fwrite($myfile, ($estr. PHP_EOL));
             fclose($myfile);
         }
     }
@@ -89,7 +90,7 @@ function load_entries() {
             $sline = explode(' ', $line);
             if (count($sline)>2) {
                 $tstamp = $sline[0]. ' '. $sline[1];
-                $tquant = $sline[2];
+                $tquant = trim($sline[2]);
                 $entry = array($tstamp, $tquant);
                 array_push($entries, $entry);
                 #echo $tstamp. ' '. $tquant. '<br>'. PHP_EOL;
@@ -101,6 +102,40 @@ function load_entries() {
         #echo"<br>soubor nelze otevrit";
     }
     return $entries;
+}
+
+function save_entries($entries) {
+    $myfile = fopen(FILE, 'w');
+    if ($myfile) {
+        foreach ($entries as $e) {
+            fwrite($myfile, $e[0]. ' '. $e[1]. PHP_EOL);
+        }
+        fclose($myfile);
+    }
+    else {
+        #echo "<br>soubor nelze vytvorit";
+    }
+}
+
+function delete_entry($entry) {
+    $entries = load_entries();
+    $new_entries = array();
+    $found = false;
+    
+    foreach ($entries as $e) {
+        if ($entry === $e) {
+            $found = true;
+        }
+        else {
+            array_push($new_entries, $e);
+        }
+    }
+    
+    if ($found) {
+        save_entries($new_entries);
+    }
+    
+    return $found;
 }
 
 ?>
