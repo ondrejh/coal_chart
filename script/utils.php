@@ -13,7 +13,14 @@ function get_date() {
 }
 
 function get_time() {
-    return date('h:i', time());
+    return date('H:i', time());
+}
+
+function to_kg($vstr) {
+    if (substr($vstr,-1) === 'p')
+        return intval(substr($vstr, 0, -1))*25;
+    else
+        return intval($vstr);
 }
 
 function insert_entry($entry){
@@ -78,7 +85,7 @@ function array_sort($array, $on, $order=SORT_ASC)
 }
 
 function sort_entries_by_time($entries) {
-    return array_reverse(array_sort($entries, 0));
+    return array_sort($entries, 0);
 }
 
 function load_entries() {
@@ -136,6 +143,27 @@ function delete_entry($entry) {
     }
     
     return $found;
+}
+
+function calculate_div($entries) {
+    $entries_div = array();
+    $last_t = 0;
+    $first = true;
+    foreach ($entries as $e) {
+        if ($first) {
+            $last_t = strtotime($e[0]);
+            $first = false;
+        }
+        else {
+            $kg = to_kg($e[1]);
+            $t = strtotime($e[0]);
+            $dt = ($t - $last_t) / 86400; // sec to day
+            $vdt = $kg / $dt;
+            $last_t = $t;
+            array_push($entries_div, array($t, $vdt));
+        }
+    }
+    return $entries_div;
 }
 
 ?>
