@@ -80,7 +80,10 @@
             <header><h2>Záznamy</h2></header>
             <?php
                 $entries = sort_entries_by_time(load_entries());
+                $first = true;
                 foreach (array_reverse($entries) as $entry) {
+                    if ($first) $first = false;
+                    else echo "\t\t\t";
                     $kg = to_kg($entry[1]);
                     echo '<form method="get">';
                     echo $entry[0]. ' '. $kg. 'kg';
@@ -89,21 +92,20 @@
                     echo '<input type="hidden" name="quantity" value="'. $entry[1]. '"> ';
                     echo '<input type="submit" value="Smazat">';
                     echo '</form>'. PHP_EOL;
-                    echo '<br>'. PHP_EOL;
                 }
             ?>
         </article>
 
 		<article>
 			<header><h2>Spotřeba</h2></header>
-            <div id="chart" style="width:600px;height:250px;"></div>
+            <div id="chart" style="width:800px;height:400px;"></div>
             <?php
                 $cdiv = calculate_div($entries);
-                foreach ($cdiv as $e) {
-                    echo date('Y.m.d H:i ', $e[0]). sprintf("%.01f",$e[1]). ' kg/day<br>'. PHP_EOL;
-                }
-                echo "<script>". PHP_EOL;#. "CHART = document.getElementById('chart');". PHP_EOL;
-                echo "var data = [{x: [";
+                #foreach ($cdiv as $e) {
+                #    echo date('Y.m.d H:i ', $e[0]). sprintf("%.01f",$e[1]). ' kg/day<br>'. PHP_EOL;
+                #}
+                echo "<script>". PHP_EOL;
+                echo "\t\t\t\tvar data = [{x: [";
                 $first = true;
                 foreach ($cdiv as $e) {
                     if ($first) $first = false;
@@ -115,11 +117,11 @@
                 foreach ($cdiv as $e) {
                     if ($first) $first = false;
                     else echo ', ';
-                    echo $e[1];
+                    echo round($e[1],1);
                 }
                 echo "], type: 'scatter'}];". PHP_EOL;
-                echo "Plotly.newPlot('chart', data);". PHP_EOL;
-                echo "</script>". PHP_EOL;
+                echo "\t\t\t\tPlotly.newPlot('chart', data, {margin: { t: 0 } });". PHP_EOL;
+                echo "\t\t\t</script>". PHP_EOL;
             ?>
 		</article>
 
