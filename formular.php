@@ -102,22 +102,24 @@
                 foreach ($cdiv as $e) {
                     echo date('Y.m.d H:i ', $e[0]). sprintf("%.01f",$e[1]). ' kg/day<br>'. PHP_EOL;
                 }
-                echo "<script>". PHP_EOL. "CHART = document.getElementById('chart');". PHP_EOL;
-                echo "Plotly.plot(CHART, [{x: [";
+                echo "<script>". PHP_EOL;#. "CHART = document.getElementById('chart');". PHP_EOL;
+                echo "var data = [{x: [";
                 $first = true;
                 foreach ($cdiv as $e) {
                     if ($first) $first = false;
                     else echo ', ';
-                    echo "'". date('Y.m.d H:i', $e[0]). "'";
+                    echo "'". date('Y-m-d H:i:s', $e[0]). "'";
                 }
-                echo "], y: [";
+                echo "], y:[";
                 $first = true;
                 foreach ($cdiv as $e) {
                     if ($first) $first = false;
                     else echo ', ';
                     echo $e[1];
                 }
-                echo "], type: 'scatter'}], {margin: { t: 0 } } );". PHP_EOL. "</script>". PHP_EOL;
+                echo "], type: 'scatter'}];". PHP_EOL;
+                echo "Plotly.newPlot('chart', data);". PHP_EOL;
+                echo "</script>". PHP_EOL;
             ?>
 		</article>
 
