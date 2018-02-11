@@ -9,6 +9,7 @@
     <meta charset="utf-8"/>
     <script src="script/plotly-latest.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" media="all" href="style/newstyle.css" />
     <title>Title</title>
 </head>
 
@@ -57,27 +58,26 @@
 
     <section>
 
-		<article>
+        <aside id='entries'>
 			<header>
 				<h2>Přikládání</h2>
 			</header>
-            <form method="get">
+            <form method="get"><table><tr>
                 <input type="hidden" name="action" value="add">
                 <!--
                 Dne: <input type="date" name="date" value="1981-04-08">
                 v: <input type="time" name="time" value="18:45">
                 -->
                 <?php
-                    echo 'Dne: <input type="date" name="date" value="'. get_date(). '">';
-                    echo 'v: <input type="time" name="time" value="'. get_time(). '">';
+                    echo "<td id='tab_date'>". '<input type="date" name="date" value="'. get_date(). '"></td>';
+                    echo "<td id='tab_time'>". '<input type="time" name="time" value="'. get_time(). '"></td>';
                 ?>
-                <input type="number" name="quantity" value=5 min=1 max=7 style="width: 2em;"> pytlů
-                <input type="submit" value="Přiložit">
-            </form>
-		</article>
+                <td id='tab_volume'><input type="number" name="quantity" value=5 min=1 max=7 style="width: 2em;"></td>
+                <td><input type="submit" value="Přiložit"></td>
+            </tr></table></form>
         
-        <article>
             <header><h2>Záznamy</h2></header>
+            <table><!--<tr><th>Date</th><th>Amount</th><th>Action</th></tr>-->
             <?php
                 $entries = sort_entries_by_time(load_entries());
                 $first = true;
@@ -85,20 +85,22 @@
                     if ($first) $first = false;
                     else echo "\t\t\t";
                     $kg = to_kg($entry[1]);
-                    echo '<form method="get">';
-                    echo $entry[0]. ' '. $kg. 'kg';
+                    $dt = new DateTime($entry[0]);
+                    echo "<tr><td id='tab_date'>". $dt->format('Y.m.d'). "</td><td id='tab_time'>". $dt->format('H:i'). "</td><td id='tab_volume'>". $kg. 'kg</td>';
+                    echo '<td><form method="get">';
                     echo '<input type="hidden" name="action" value="delete"> ';
                     echo '<input type="hidden" name="tstamp" value="'. $entry[0]. '"> ';
                     echo '<input type="hidden" name="quantity" value="'. $entry[1]. '"> ';
                     echo '<input type="submit" value="Smazat">';
-                    echo '</form>'. PHP_EOL;
+                    echo '</form></td></tr>'. PHP_EOL;
                 }
             ?>
-        </article>
+            </table>
+        </aside>
 
-		<article>
-			<header><h2>Spotřeba</h2></header>
-            <div id="chart" style="width:800px;height:400px;"></div>
+		<article id='charts'>
+            <header><h2>Spotřeba uhlí</h2></header>
+            <div id='chart' />
             <?php
                 $cdiv = calculate_div($entries);
                 #foreach ($cdiv as $e) {
