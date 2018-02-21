@@ -1,12 +1,12 @@
 article {
     position: absolute;
     left: 0px;
-    top: 50px;
+    top: 0px;
     width: 850px;
 }
 
 aside {
     position: absolute;
     left: 850px;
-    top: 50px;
+    top: 0px;
 }

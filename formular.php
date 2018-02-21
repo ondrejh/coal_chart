@@ -10,7 +10,8 @@
     <script src="script/plotly-latest.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" media="all" href="style/newstyle.css" />
-    <title>Title</title>
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+    <title>Spotřeba uhlí</title>
 </head>
 
 <body>
