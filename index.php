@@ -61,9 +61,7 @@
     <section>
 
         <aside id='entries'>
-			<header>
-				<h2>Přikládání</h2>
-			</header>
+			<header><h2>Přikládání</h2></header>
             <form method="get"><input type="hidden" name="action" value="add"/><table><tr>
                 <!--
                 Dne: <input type="date" name="date" value="1981-04-08">
@@ -76,9 +74,10 @@
                 <td id='tab_volume'><input type="number" name="quantity" value=5 min=1 max=7 style="width: 2em;"></td>
                 <td><input type="submit" value="Přiložit"></td>
             </tr></table></form>
+            <header><h2>Souhrn</h2></header>
             <table>
-                <tr><td>Přikládáno</td><td><span id='entries_count'></span>krát</td></tr>
-                <tr><td>Celkem přiloženo</td><td><span id='kgsum'></span>kg</td></tr>
+                <tr><td>Přikládáno</td><td class='ra'><span id='entries_count'></span></td><td>krát</td></tr>
+                <tr><td>Celkem přiloženo</td><td class='ra'><span id='kgsum'></span></td><td>kg</td></tr>
             </table>
         
             <header><h2>Záznamy</h2></header>
