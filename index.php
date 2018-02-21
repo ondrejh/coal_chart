@@ -12,16 +12,6 @@
     <link rel="stylesheet" media="all" href="style/newstyle.css" />
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
     <title>Spotřeba uhlí</title>
-</head>
-
-<body>
-    <!--<header>
-		<nav>
-			<ul>
-				<li>Your menu</li>
-			</ul>
-		</nav>
-	</header>-->
 
     <?php
         if( $_GET["action"]) {
@@ -32,6 +22,7 @@
                     $tstamp = $tdate. ' '. $ttime;
                     $tquant = $_GET["quantity"]. 'p';
                     $entry = array($tstamp, $tquant);
+                    echo "<meta http-equiv='refresh' content='3;url=index.php'/></head><body>";
                     echo $tdate. " ". $ttime. " přiloženo ". $tquant. "ytlů";
                     insert_entry($entry);
                     echo "</body></html>";
@@ -56,6 +47,16 @@
             }
         }
     ?>
+</head>
+
+<body>
+    <!--<header>
+		<nav>
+			<ul>
+				<li>Your menu</li>
+			</ul>
+		</nav>
+	</header>-->
 
     <section>
 
