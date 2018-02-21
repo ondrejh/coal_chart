@@ -78,10 +78,10 @@
                 <td><input type="submit" value="Přiložit"></td>
             </tr></table></form>
         
-            <header><h2>Záznamy</h2></header>
-            <table><!--<tr><th>Date</th><th>Amount</th><th>Action</th></tr>-->
             <?php
                 $entries = sort_entries_by_time(load_entries());
+                echo "\t\t<header><h2>Záznamy (". count($entries). ")</h2></header>";
+                echo "\t\t<table><!--<tr><th>Date</th><th>Amount</th><th>Action</th></tr>-->";
                 $first = true;
                 foreach (array_reverse($entries) as $entry) {
                     if ($first) $first = false;
