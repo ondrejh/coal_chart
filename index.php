@@ -64,8 +64,7 @@
 			<header>
 				<h2>Přikládání</h2>
 			</header>
-            <form method="get"><table><tr>
-                <input type="hidden" name="action" value="add">
+            <form method="get"><input type="hidden" name="action" value="add"/><table><tr>
                 <!--
                 Dne: <input type="date" name="date" value="1981-04-08">
                 v: <input type="time" name="time" value="18:45">
@@ -77,16 +76,22 @@
                 <td id='tab_volume'><input type="number" name="quantity" value=5 min=1 max=7 style="width: 2em;"></td>
                 <td><input type="submit" value="Přiložit"></td>
             </tr></table></form>
+            <table>
+                <tr><td>Přikládáno</td><td><span id='entries_count'></span>krát</td></tr>
+                <tr><td>Celkem přiloženo</td><td><span id='kgsum'></span>kg</td></tr>
+            </table>
         
+            <header><h2>Záznamy</h2></header>
+            <table>
             <?php
                 $entries = sort_entries_by_time(load_entries());
-                echo "\t\t<header><h2>Záznamy (". count($entries). ")</h2></header>";
-                echo "\t\t<table><!--<tr><th>Date</th><th>Amount</th><th>Action</th></tr>-->";
                 $first = true;
+                $kgsum = 0;
                 foreach (array_reverse($entries) as $entry) {
                     if ($first) $first = false;
                     else echo "\t\t\t";
                     $kg = to_kg($entry[1]);
+                    $kgsum += $kg;
                     $dt = new DateTime($entry[0]);
                     echo "<tr><td id='tab_date'>". $dt->format('Y.m.d'). "</td><td id='tab_time'>". $dt->format('H:i'). "</td><td id='tab_volume'>". $kg. 'kg</td>';
                     echo '<td><form method="get">';
@@ -98,11 +103,13 @@
                 }
             ?>
             </table>
+            <script>document.getElementById('entries_count').innerHTML = '<?php echo count($entries); ?>'</script>
+            <script>document.getElementById('kgsum').innerHTML = '<?php echo $kgsum; ?>'</script>
         </aside>
 
 		<article id='charts'>
             <header><h2>Spotřeba uhlí</h2></header>
-            <div id='chart' />
+            <div id='chart'></div>
             <?php
                 $cdiv = calculate_div($entries);
                 #foreach ($cdiv as $e) {
