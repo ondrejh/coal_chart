@@ -22,7 +22,7 @@
                     $tstamp = $tdate. ' '. $ttime;
                     $tquant = $_GET["quantity"]. 'p';
                     $entry = array($tstamp, $tquant);
-                    echo "<meta http-equiv='refresh' content='3;url=index.php'/></head><body>";
+                    echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
                     echo $tdate. " ". $ttime. " přiloženo ". $tquant. "ytlů";
                     insert_entry($entry);
                     echo "</body></html>";
@@ -41,9 +41,18 @@
                     else {
                         echo " Can't find entry .. ERROR";
                     }
+                    echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
                     echo "</body></html>";
                     exit();
                 }
+            }
+            if ( $_GET["action"] === "stock") {
+                $tstamp = $_GET["tstamp"];
+                $tquant = $_GET["quantity"];
+                $tqkg = $tquant*25;
+                echo $tquant. " pytlů (". $tqkg. "kg) přidávám na sklad";
+                echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
+                exit();
             }
         }
     ?>
@@ -61,19 +70,27 @@
     <section>
 
         <aside id='entries'>
-			<header><h2>Přikládání</h2></header>
+
+            <header><h2>Přikládání</h2></header>
             <form method="get"><input type="hidden" name="action" value="add"/><table><tr>
-                <!--
-                Dne: <input type="date" name="date" value="1981-04-08">
-                v: <input type="time" name="time" value="18:45">
-                -->
                 <?php
                     echo "<td id='tab_date'>". '<input type="date" name="date" value="'. get_date(). '"></td>';
                     echo "<td id='tab_time'>". '<input type="time" name="time" value="'. get_time(). '"></td>';
                 ?>
-                <td id='tab_volume'><input type="number" name="quantity" value=5 min=1 max=7 style="width: 2em;"></td>
+                <td id='tab_volume'><input type="number" name="quantity" value=5 min=1 max=7 style="width: 4em;"></td>
                 <td><input type="submit" value="Přiložit"></td>
             </tr></table></form>
+
+            <header><h2>Zásoby</h2></header>
+            <form method="get"><input type="hidden" name="action" value="stock"/><table><tr>
+                <?php
+                    echo "<td id='tab_date'>". '<input type="date" name="date" value="'. get_date(). '"></td>';
+                    echo "<td id='tab_time'>". '<input type="time" name="time" value="'. get_time(). '"></td>';
+                ?>                
+                <td id='tab_volume'><input type="number" name="quantity" value=120 min=30 max=300 step=30 style="width: 4em;"></td>
+                <td><input type="submit" value="Naskladnit"></td>
+            </tr></table></form>
+
             <header><h2>Souhrn</h2></header>
             <table>
                 <tr><td>Přikládáno</td><td class='ra'><span id='entries_count'></span></td><td>krát</td></tr>
