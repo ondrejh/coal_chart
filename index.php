@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html>
 
-<?php
-    include "script/utils.php"
-?>
-    
 <head>
     <meta charset="utf-8"/>
     <script src="script/plotly-latest.min.js"></script>
@@ -14,6 +10,15 @@
     <title>Spotřeba uhlí</title>
 
     <?php
+        include "script/utils.php";
+    
+        if (convert_filebased_to_sqlite()) {
+            echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
+            echo "System was updated to SQLite.";
+            echo "</body></html>";
+            exit();
+        }
+        
         if (isset($_GET["action"])) {
             echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
             if ( $_GET["action"] === "add") {
@@ -101,20 +106,23 @@
             <header><h2>Záznamy</h2></header>
             <table>
             <?php
-                $entries = sort_entries_by_time(load_entries());
+                $db_entries = load_entries();
+                $entries = array();
+                while($row = $db_entries->fetchArray()) {
+                    $entries[] = array($row['timestamp'], $row['amount']);
+                }
                 $first = true;
                 $kgsum = 0;
-                foreach (array_reverse($entries) as $entry) {
+                while($row = $db_entries->fetchArray()) {
                     if ($first) $first = false;
                     else echo "\t\t\t";
-                    $kg = to_kg($entry[1]);
+                    $kg = $row['amount'];
                     $kgsum += $kg;
-                    $dt = new DateTime($entry[0]);
+                    $dt = new DateTime($row['timestamp']);//$entry[0]);
                     echo "<tr><td id='tab_date'>". $dt->format('Y.m.d'). "</td><td id='tab_time'>". $dt->format('H:i'). "</td><td id='tab_volume'>". $kg. 'kg</td>';
                     echo '<td><form method="get">';
                     echo '<input type="hidden" name="action" value="delete"> ';
-                    echo '<input type="hidden" name="tstamp" value="'. $entry[0]. '"> ';
-                    echo '<input type="hidden" name="quantity" value="'. $entry[1]. '"> ';
+                    echo '<input type="hidden" name="id_entry" value="'. $row['id']. '"> ';
                     echo '<input type="submit" value="Smazat">';
                     echo '</form></td></tr>'. PHP_EOL;
                 }
@@ -137,6 +145,7 @@
                 }
             ?>
             </table>
+            
             <script>document.getElementById('entries_count').innerHTML = '<?php echo count($entries); ?>'</script>
             <script>document.getElementById('kgsum').innerHTML = '<?php echo $kgsum; ?>'</script>
         </aside>
