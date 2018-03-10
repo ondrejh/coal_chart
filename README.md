@@ -6,7 +6,7 @@ Webapp creating chart from coal consumption over the heating season - part of ho
 - swap to sqlite
 - add stock
 
-## sqlite database "data/entries.db"
+## sqlite database "data/entries.sql"
 
 - table 'entries'
     - id (int) - primary key
@@ -19,3 +19,4 @@ Webapp creating chart from coal consumption over the heating season - part of ho
     - timestamp (datetime) - timestamp of action
     - price (float) - price of order [kč]
     - bill (string) - filename of the bill scan
+    - note (string)

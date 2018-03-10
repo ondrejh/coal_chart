@@ -2,6 +2,7 @@
 
 define ("DIRECTORY", "./data/");
 define ("FILE", DIRECTORY. "entries.txt");
+define ("DB", DIRECTORY. "entries.sql");
 
 #class entry {
 #    $timestamp = "2018-01-01 18:45";
@@ -164,6 +165,38 @@ function calculate_div($entries) {
         }
     }
     return $entries_div;
+}
+
+function stock_add($amount, $timestamp) {
+    $db = new SQLite3(DB);
+    $query = "CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME, price FLOAT, bill STRING)";
+    $db->query($query);
+    $query = "SELECT COUNT(*) as count FROM stock WHERE amount=". $amount. " AND timestamp='". $timestamp. "'";
+    $count = $db->querySingle($query);
+    if ($count>0)
+        return "Chyba (položka již existuje)";
+    $query = "INSERT INTO stock (amount, timestamp) VALUES (". $amount. ", '". $timestamp. "')";
+    $db->query($query);
+    return "OK";
+}
+
+function stock_read() {
+    $db = new SQLite3(DB);
+    $query = "CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME, price FLOAT, bill STRING)";
+    $db->query($query);
+    $query = "SELECT * FROM stock ORDER BY timestamp";
+    $result = $db->query($query);
+    return $result;
+}
+
+function stock_delete($id_entry) {
+    $db = new SQLite3(DB);
+    $query = "SELECT * FROM stock WHERE id=". $id_entry;
+    $result = $db->query($query);
+    $row = $result->fetchArray();
+    $query = "DELETE FROM stock WHERE id=". $id_entry;
+    $db->query($query);
+    return $row;
 }
 
 ?>

@@ -14,7 +14,8 @@
     <title>Spotřeba uhlí</title>
 
     <?php
-        if( $_GET["action"]) {
+        if (isset($_GET["action"])) {
+            echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
             if ( $_GET["action"] === "add") {
                 if( $_GET["date"] || $_GET["time"] || $_GET["quantity"] ) {
                     $tdate = $_GET["date"];
@@ -22,11 +23,8 @@
                     $tstamp = $tdate. ' '. $ttime;
                     $tquant = $_GET["quantity"]. 'p';
                     $entry = array($tstamp, $tquant);
-                    echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
                     echo $tdate. " ". $ttime. " přiloženo ". $tquant. "ytlů";
                     insert_entry($entry);
-                    echo "</body></html>";
-                    exit();
                 }
             }
             if ( $_GET["action"] === "delete") {
@@ -41,19 +39,22 @@
                     else {
                         echo " Can't find entry .. ERROR";
                     }
-                    echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
-                    echo "</body></html>";
-                    exit();
                 }
             }
-            if ( $_GET["action"] === "stock") {
-                $tstamp = $_GET["tstamp"];
+            if ( $_GET["action"] === "stock_add") {
+                $tdate = $_GET["date"];
                 $tquant = $_GET["quantity"];
                 $tqkg = $tquant*25;
-                echo $tquant. " pytlů (". $tqkg. "kg) přidávám na sklad";
-                echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
-                exit();
+                echo $tquant. " pytlů (". $tqkg. "kg) přidávám na sklad .. ";
+                echo stock_add($tqkg, $tdate);
             }
+            if ( $_GET["action"] === "stock_delete") {
+                $tid = $_GET["id_entry"];
+                $row = stock_delete($tid);
+                echo 'Mažu položku '. $row['timestamp']. ' '. $row['amount']. 'kg ze skladu';
+            }
+            echo "</body></html>";
+            exit();
         }
     ?>
 </head>
@@ -77,15 +78,14 @@
                     echo "<td id='tab_date'>". '<input type="date" name="date" value="'. get_date(). '"></td>';
                     echo "<td id='tab_time'>". '<input type="time" name="time" value="'. get_time(). '"></td>';
                 ?>
-                <td id='tab_volume'><input type="number" name="quantity" value=5 min=1 max=7 style="width: 4em;"></td>
+                <td id='tab_volume'><input type="number" name="quantity" value=5 min=1 max=7 style="width: 2em;"></td>
                 <td><input type="submit" value="Přiložit"></td>
             </tr></table></form>
 
             <header><h2>Zásoby</h2></header>
-            <form method="get"><input type="hidden" name="action" value="stock"/><table><tr>
+            <form method="get"><input type="hidden" name="action" value="stock_add"/><table><tr>
                 <?php
                     echo "<td id='tab_date'>". '<input type="date" name="date" value="'. get_date(). '"></td>';
-                    echo "<td id='tab_time'>". '<input type="time" name="time" value="'. get_time(). '"></td>';
                 ?>                
                 <td id='tab_volume'><input type="number" name="quantity" value=120 min=30 max=300 step=30 style="width: 4em;"></td>
                 <td><input type="submit" value="Naskladnit"></td>
@@ -119,6 +119,20 @@
                 }
             ?>
             </table>
+            
+            <header><h2>Nákupy</h2></header>
+            <table>
+            <?php
+                $results = stock_read();
+                while($row = $results->fetchArray()) {
+                    echo "\t\t\t<tr><td id='tab_date'>". $row['timestamp']. "</td><td if='tab_amount'>". $row['amount']. "kg</td>";
+                    echo '<td><form method="get">';
+                    echo '<input type="hidden" name="action" value="stock_delete">';
+                    echo '<input type="hidden" name="id_entry" value="'. $row['id']. '">';
+                    echo '<input type="submit" value="Smazat"></form></td></tr>'. PHP_EOL;
+                }
+            ?>
+            </table>
             <script>document.getElementById('entries_count').innerHTML = '<?php echo count($entries); ?>'</script>
             <script>document.getElementById('kgsum').innerHTML = '<?php echo $kgsum; ?>'</script>
         </aside>
@@ -128,9 +142,6 @@
             <div id='chart'></div>
             <?php
                 $cdiv = calculate_div($entries);
-                #foreach ($cdiv as $e) {
-                #    echo date('Y.m.d H:i ', $e[0]). sprintf("%.01f",$e[1]). ' kg/day<br>'. PHP_EOL;
-                #}
                 echo "<script>". PHP_EOL;
                 echo "\t\t\t\tvar data = [{x: [";
                 $first = true;
