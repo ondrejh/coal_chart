@@ -99,8 +99,10 @@
 
             <header><h2>Souhrn</h2></header>
             <table>
+                <tr><td>Nakoupeno</td><td class='ra'><span id='stock_count'></span></td><td>kg</td></tr>
                 <tr><td>Přikládáno</td><td class='ra'><span id='entries_count'></span></td><td>krát</td></tr>
                 <tr><td>Celkem přiloženo</td><td class='ra'><span id='kgsum'></span></td><td>kg</td></tr>
+                <tr><td>Zbývá</td><td class='ra'><span id='stock_left'></span></td><td>kg</td></tr>
             </table>
         
             <header><h2>Záznamy</h2></header>
@@ -126,12 +128,14 @@
                     echo '<input type="submit" value="Smazat">';
                     echo '</form></td></tr>'. PHP_EOL;
                 }
+                $all_entries = $entries;
             ?>
             </table>
             
             <header><h2>Nákupy</h2></header>
             <table>
             <?php
+                $stock_sum = 0;
                 $results = stock_read();
                 while($row = $results->fetchArray()) {
                     echo "\t\t\t<tr>";
@@ -142,12 +146,16 @@
                     echo '<input type="hidden" name="action" value="stock_delete">';
                     echo '<input type="hidden" name="id_entry" value="'. $row['id']. '">';
                     echo '<input type="submit" value="Smazat"></form></td></tr>'. PHP_EOL;
+                    $stock_sum += $row['amount'];
+                    $all_entries[] = array($row['timestamp'], $row['amount']);
                 }
             ?>
             </table>
             
+            <script>document.getElementById('stock_count').innerHTML = '<?php echo $stock_sum; ?>'</script>
             <script>document.getElementById('entries_count').innerHTML = '<?php echo count($entries); ?>'</script>
             <script>document.getElementById('kgsum').innerHTML = '<?php echo $kgsum; ?>'</script>
+            <script>document.getElementById('stock_left').innerHTML = '<?php echo ($stock_sum - $kgsum); ?>'</script>
         </aside>
 
 		<article id='charts'>
@@ -172,6 +180,41 @@
                 }
                 echo "], type: 'scatter'}];". PHP_EOL;
                 echo "\t\t\t\tPlotly.newPlot('chart', data, {margin: { t: 0 } });". PHP_EOL;
+                echo "\t\t\t</script>". PHP_EOL;
+            ?>
+            <header><h2>Zásoba uhlí</h2></header>
+            <div id='chart2'></div>
+            <?php
+                $t = array();
+                $s = array();
+                $sm = 0;
+                foreach (array_sort($all_entries, 0) as $e) {
+                    if ($e[1]>500) {
+                        $sm += $e[1];
+                        $t[] = $e[0]. " 00:00:00";
+                    } else {
+                        $sm -= $e[1];
+                        $t[] = $e[0]. ":00";
+                    }
+                    $s[] = $sm;
+                }
+                echo "<script>". PHP_EOL;
+                echo "\t\t\tvar data = [{x: [";
+                $first = true;
+                foreach ($t as $tv) {
+                    if ($first) $first=false;
+                    else echo ', ';
+                    echo "'". $tv. "'";//"'". date('Y-m-d H:i:s', $tv). "'";
+                }
+                echo "], y:[";
+                $fist = true;
+                foreach ($s as $sv) {
+                    if ($first) $first=false;
+                    else echo ', ';
+                    echo $sv;
+                }
+                echo "], type: 'scatter'}];". PHP_EOL;
+                echo "\t\t\t\tPlotly.newPlot('chart2', data, {margin: { t: 0 } });". PHP_EOL;
                 echo "\t\t\t</script>". PHP_EOL;
             ?>
 		</article>

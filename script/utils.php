@@ -4,11 +4,6 @@ define ("DIRECTORY", "./data/");
 define ("FILE", DIRECTORY. "entries.txt");
 define ("DB", DIRECTORY. "entries.sql");
 
-#class entry {
-#    $timestamp = "2018-01-01 18:45";
-#    $amount = 0;
-#}
-
 function get_date() {
     return date('Y-m-d', time());
 }
@@ -17,12 +12,37 @@ function get_time() {
     return date('H:i', time());
 }
 
-/*function to_kg($vstr) {
-    if (substr($vstr,-1) === 'p')
-        return intval(substr($vstr, 0, -1))*25;
-    else
-        return intval($vstr);
-}*/
+#array sorting thanks to https://secure.php.net/manual/en/function.sort.php
+function array_sort($array, $on, $order=SORT_ASC)
+{
+    $new_array = array();
+    $sortable_array = array();
+    if (count($array) > 0) {
+        foreach ($array as $k => $v) {
+            if (is_array($v)) {
+                foreach ($v as $k2 => $v2) {
+                    if ($k2 == $on) {
+                        $sortable_array[$k] = $v2;
+                    }
+                }
+            } else {
+                $sortable_array[$k] = $v;
+            }
+        }
+        switch ($order) {
+            case SORT_ASC:
+                asort($sortable_array);
+            break;
+            case SORT_DESC:
+                arsort($sortable_array);
+            break;
+        }
+        foreach ($sortable_array as $k => $v) {
+            $new_array[$k] = $array[$k];
+        }
+    }
+    return $new_array;
+}
 
 function insert_entry($amount, $timestamp){
     $db = new SQLite3(DB);
@@ -36,46 +56,6 @@ function insert_entry($amount, $timestamp){
     $db->query($query);
     return "OK";
 }
-
-#array sorting thanks to https://secure.php.net/manual/en/function.sort.php
-/*function array_sort($array, $on, $order=SORT_ASC)
-{
-    $new_array = array();
-    $sortable_array = array();
-
-    if (count($array) > 0) {
-        foreach ($array as $k => $v) {
-            if (is_array($v)) {
-                foreach ($v as $k2 => $v2) {
-                    if ($k2 == $on) {
-                        $sortable_array[$k] = $v2;
-                    }
-                }
-            } else {
-                $sortable_array[$k] = $v;
-            }
-        }
-
-        switch ($order) {
-            case SORT_ASC:
-                asort($sortable_array);
-            break;
-            case SORT_DESC:
-                arsort($sortable_array);
-            break;
-        }
-
-        foreach ($sortable_array as $k => $v) {
-            $new_array[$k] = $array[$k];
-        }
-    }
-
-    return $new_array;
-}
-
-function sort_entries_by_time($entries) {
-    return array_sort($entries, 0);
-}*/
 
 function load_entries() {
     $db = new SQLite3(DB);
