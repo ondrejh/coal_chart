@@ -43,10 +43,10 @@
             }
             if ( $_GET["action"] === "stock_add") {
                 $tdate = $_GET["date"];
-                $tquant = $_GET["quantity"];
-                $tqkg = $tquant*25;
-                echo $tquant. " pytlů (". $tqkg. "kg) přidávám na sklad .. ";
-                echo stock_add($tqkg, $tdate);
+                $tqkg = $_GET["quantity"];
+                $tprice = $_GET["price"];
+                echo $tqkg. "kg celkem za ". $tprice. "kč přidávám na sklad .. ";
+                echo stock_add($tqkg, $tprice, $tdate);
             }
             if ( $_GET["action"] === "stock_delete") {
                 $tid = $_GET["id_entry"];
@@ -87,7 +87,8 @@
                 <?php
                     echo "<td id='tab_date'>". '<input type="date" name="date" value="'. get_date(). '"></td>';
                 ?>                
-                <td id='tab_volume'><input type="number" name="quantity" value=120 min=30 max=300 step=30 style="width: 4em;"></td>
+                <td id='tab_volume'><input type="number" name="quantity" value=3000 min=0 max=10000 step=1000 style="width: 4em;">kg</td>
+                <td id='tab_price'><input type="number" name="price" value=15000 min=0 step=any style="width: 6em;">kč</td>
                 <td><input type="submit" value="Naskladnit"></td>
             </tr></table></form>
 
@@ -125,7 +126,10 @@
             <?php
                 $results = stock_read();
                 while($row = $results->fetchArray()) {
-                    echo "\t\t\t<tr><td id='tab_date'>". $row['timestamp']. "</td><td if='tab_amount'>". $row['amount']. "kg</td>";
+                    echo "\t\t\t<tr>";
+                    echo "<td id='tab_date'>". $row['timestamp']. "</td>";
+                    echo "<td if='tab_amount'>". $row['amount']. "kg</td>";
+                    echo "<td>". $row['price']. "kč</td>";
                     echo '<td><form method="get">';
                     echo '<input type="hidden" name="action" value="stock_delete">';
                     echo '<input type="hidden" name="id_entry" value="'. $row['id']. '">';

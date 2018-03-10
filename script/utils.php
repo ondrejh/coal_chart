@@ -167,7 +167,7 @@ function calculate_div($entries) {
     return $entries_div;
 }
 
-function stock_add($amount, $timestamp) {
+function stock_add($amount, $price, $timestamp) {
     $db = new SQLite3(DB);
     $query = "CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME, price FLOAT, bill STRING)";
     $db->query($query);
@@ -175,7 +175,7 @@ function stock_add($amount, $timestamp) {
     $count = $db->querySingle($query);
     if ($count>0)
         return "Chyba (položka již existuje)";
-    $query = "INSERT INTO stock (amount, timestamp) VALUES (". $amount. ", '". $timestamp. "')";
+    $query = "INSERT INTO stock (amount, price, timestamp) VALUES (". $amount. ", ". $price .", '". $timestamp. "')";
     $db->query($query);
     return "OK";
 }
