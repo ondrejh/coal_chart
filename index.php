@@ -160,31 +160,8 @@
 
 		<article id='charts'>
             <header><h2>Spotřeba uhlí</h2></header>
-            <div id='chart'></div>
             <?php
                 $cdiv = calculate_div($entries);
-                echo "<script>". PHP_EOL;
-                echo "\t\t\t\tvar data = [{x: [";
-                $first = true;
-                foreach ($cdiv as $e) {
-                    if ($first) $first = false;
-                    else echo ', ';
-                    echo "'". date('Y-m-d H:i:s', $e[0]). "'";
-                }
-                echo "], y:[";
-                $first = true;
-                foreach ($cdiv as $e) {
-                    if ($first) $first = false;
-                    else echo ', ';
-                    echo round($e[1],1);
-                }
-                echo "], type: 'scatter'}];". PHP_EOL;
-                echo "\t\t\t\tPlotly.newPlot('chart', data, {margin: { t: 0 } });". PHP_EOL;
-                echo "\t\t\t</script>". PHP_EOL;
-            ?>
-            <header><h2>Zásoba uhlí</h2></header>
-            <div id='chart2'></div>
-            <?php
                 $t = array();
                 $s = array();
                 $sm = 0;
@@ -198,27 +175,64 @@
                     }
                     $s[] = $sm;
                 }
-                echo "<script>". PHP_EOL;
-                echo "\t\t\tvar data = [{x: [";
-                $first = true;
-                foreach ($t as $tv) {
-                    if ($first) $first=false;
-                    else echo ', ';
-                    echo "'". $tv. "'";//"'". date('Y-m-d H:i:s', $tv). "'";
-                }
-                echo "], y:[";
-                $fist = true;
-                foreach ($s as $sv) {
-                    if ($first) $first=false;
-                    else echo ', ';
-                    echo $sv;
-                }
-                echo "], type: 'scatter'}];". PHP_EOL;
-                echo "\t\t\t\tPlotly.newPlot('chart2', data, {margin: { t: 0 } });". PHP_EOL;
-                echo "\t\t\t</script>". PHP_EOL;
             ?>
-		</article>
 
+            <div id='chart'></div><script>
+                var trace1 = {
+                    x: [<?php //1, 2, 3],
+                        $first = true;
+                        foreach ($cdiv as $e) {
+                            if ($first) $first = false;
+                            else echo ', ';
+                            echo "'". date('Y-m-d H:i:s', $e[0]). "'";
+                        }?>],
+                    y: [<?php //40, 50, 60],
+                        $first = true;
+                        foreach ($cdiv as $e) {
+                            if ($first) $first = false;
+                            else echo ', ';
+                            echo round($e[1],1);
+                        }
+                    ?>],
+                    name: 'spotřeba [kg/den]',
+                    type: 'scatter'
+                };
+                var trace2 = {
+                    x: [<?php //2, 3, 4],
+                        $fist = true;
+                        foreach ($t as $tv) {
+                            if ($first) $first=false;
+                            else echo ', ';
+                            echo "'". $tv. "'";
+                        }
+                    ?>],
+                    y: [<?php //4, 5, 6],
+                        $fist = true;
+                        foreach ($s as $sv) {
+                            if ($first) $first=false;
+                            else echo ', ';
+                            echo $sv;
+                        }
+                    ?>],
+                    name: 'zásoba [kg]',
+                    yaxis: 'y2',
+                    type: 'scatter'
+                };
+                var data = [trace1, trace2];
+                var layout = {
+                    //title: 'Double Y Axis Example',
+                    yaxis: {title: 'spotřeba [kg/den]'},
+                    yaxis2: {
+                        title: 'zásoba [kg]',
+                        titlefont: {color: 'rgb(148, 103, 189)'},
+                        tickfont: {color: 'rgb(148, 103, 189)'},
+                        overlaying: 'y',
+                        side: 'right'
+                    }
+                };
+                Plotly.newPlot('chart', data, layout);
+            </script>
+		</article>
 	</section>
     
 </body> </html>
