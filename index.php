@@ -221,14 +221,16 @@
                 var data = [trace1, trace2];
                 var layout = {
                     //title: 'Double Y Axis Example',
-                    yaxis: {title: 'spotřeba [kg/den]'},
+                    yaxis: {title: 'spotřeba [kg / den]'},
                     yaxis2: {
                         title: 'zásoba [kg]',
                         titlefont: {color: 'rgb(148, 103, 189)'},
                         tickfont: {color: 'rgb(148, 103, 189)'},
                         overlaying: 'y',
                         side: 'right'
-                    }
+                    },
+                    margin: { t: 0},
+                    showlegend: false
                 };
                 Plotly.newPlot('chart', data, layout);
             </script>
