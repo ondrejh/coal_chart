@@ -27,9 +27,10 @@
                     $ttime = $_GET["time"];
                     $tstamp = $tdate. ' '. $ttime;
                     $tquant = $_GET["quantity"]. 'p';
-                    $entry = array($tstamp, $tquant);
+                    $tkg = $_GET["quantity"]*25;
+                    //$entry = array($tstamp, $tquant);
                     echo $tdate. " ". $ttime. " přiloženo ". $tquant. "ytlů";
-                    insert_entry($entry);
+                    insert_entry($tkg, $tstamp);
                 }
             }
             if ( $_GET["action"] === "delete") {
