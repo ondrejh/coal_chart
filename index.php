@@ -34,12 +34,13 @@
                 }
             }
             if ( $_GET["action"] === "delete") {
-                if( $_GET["tstamp"] || $_GET["quantity"] ) {
-                    $tstamp = $_GET["tstamp"];
-                    $tquant = $_GET["quantity"];
-                    $entry = array($tstamp, $tquant);
-                    echo 'Mažu položku "'. $tstamp. ' '. $tquant. '"';
-                    if (delete_entry($entry)) {
+                if( $_GET["id_entry"] ) {
+                    //$tstamp = $_GET["tstamp"];
+                    //$tquant = $_GET["quantity"];
+                    //$entry = array($tstamp, $tquant);
+                    $id = $_GET["id_entry"];
+                    echo 'Mažu položku "'. $id. '" .. ';
+                    if (delete_entry($id)) {
                         echo ' OK';
                     }
                     else {
