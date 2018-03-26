@@ -212,19 +212,19 @@
                                 $first = false;
                             }
                             else {
-                                echo ", '". $tv. "', " ;
+                                echo ", ";//'". $tv. "', " ;
                             }
                             echo "'". $tv. "'";
                         }
                     ?>],
                     y: [<?php //4, 5, 6],
                         $first = true;
-                        $lsv = 0;
+                        //$lsv = 0;
                         foreach ($s as $sv) {
                             if ($first) $first=false;
-                            else echo ', '. $lsv. ', ';
+                            else echo ', ';//. $lsv. ', ';
                             echo $sv;
-                            $lsv = $sv;
+                            //$lsv = $sv;
                         }
                     ?>],
                     name: 'zásoba [kg]',
