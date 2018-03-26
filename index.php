@@ -206,19 +206,25 @@
                 };
                 var trace2 = {
                     x: [<?php //2, 3, 4],
-                        $fist = true;
+                        $first = true;
                         foreach ($t as $tv) {
-                            if ($first) $first=false;
-                            else echo ', ';
+                            if ($first) {
+                                $first = false;
+                            }
+                            else {
+                                echo ", '". $tv. "', " ;
+                            }
                             echo "'". $tv. "'";
                         }
                     ?>],
                     y: [<?php //4, 5, 6],
-                        $fist = true;
+                        $first = true;
+                        $lsv = 0;
                         foreach ($s as $sv) {
                             if ($first) $first=false;
-                            else echo ', ';
+                            else echo ', '. $lsv. ', ';
                             echo $sv;
+                            $lsv = $sv;
                         }
                     ?>],
                     name: 'zásoba [kg]',
