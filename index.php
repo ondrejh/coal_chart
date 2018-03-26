@@ -180,6 +180,8 @@
             ?>
 
             <div id='chart'></div><script>
+                var t1col = '#3366ff';
+                var t2col = '#ff6600';
                 var trace1 = {
                     x: [<?php //1, 2, 3],
                         $first = true;
@@ -197,7 +199,10 @@
                         }
                     ?>],
                     name: 'spotřeba [kg/den]',
-                    type: 'scatter'
+                    type: 'scatter',
+                    line: {
+                        color: t1col
+                    }
                 };
                 var trace2 = {
                     x: [<?php //2, 3, 4],
@@ -218,16 +223,23 @@
                     ?>],
                     name: 'zásoba [kg]',
                     yaxis: 'y2',
-                    type: 'scatter'
+                    type: 'scatter',
+                    line: {
+                        color: t2col
+                    }
                 };
                 var data = [trace1, trace2];
                 var layout = {
                     //title: 'Double Y Axis Example',
-                    yaxis: {title: 'spotřeba [kg / den]'},
+                    yaxis: {
+                        title: 'spotřeba [kg / den]',
+                        titlefont: {color: t1col},
+                        tickfont: {color: t1col}
+                    },
                     yaxis2: {
                         title: 'zásoba [kg]',
-                        titlefont: {color: 'rgb(148, 103, 189)'},
-                        tickfont: {color: 'rgb(148, 103, 189)'},
+                        titlefont: {color: t2col},
+                        tickfont: {color: t2col},
                         overlaying: 'y',
                         side: 'right'
                     },
