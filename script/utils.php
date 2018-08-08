@@ -1,7 +1,6 @@
 <?php
 
 define ("DIRECTORY", "./data/");
-define ("FILE", DIRECTORY. "entries.txt");
 define ("DB", DIRECTORY. "entries.sql");
 
 function get_date() {
@@ -66,34 +65,6 @@ function load_entries() {
     return $result;
 }
 
-function convert_filebased_to_sqlite() {
-    if (file_exists(FILE)) {
-        $myfile = fopen(FILE, 'r');
-        if ($myfile) {
-            $db = new SQLite3(DB);
-            $query = "CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME)";
-            $db->query($query);
-
-            while (!feof($myfile)) {
-                $line = fgets($myfile);
-                $sline = explode(' ', $line);
-                if (count($sline)>2) {
-                    $tstamp = $sline[0]. ' '. $sline[1];
-                    $tquant = intval(substr(trim($sline[2]), 0, 1));
-                    $tkg = $tquant*25;
-                    //echo $tstamp. ' '. $tkg. 'kg ';
-                    insert_entry($tkg, $tstamp);
-                }
-            }
-            fclose($myfile);
-
-            rename(FILE, FILE.'.bak');
-            return true;
-        }
-    }
-    return false;
-}
-
 function delete_entry($id_entry) {
     $db = new SQLite3(DB);
     $query = "SELECT * FROM entries WHERE id=". $id_entry;
@@ -125,34 +96,34 @@ function calculate_div($entries) {
     return $entries_div;
 }
 
-function stock_add($amount, $price, $timestamp) {
+function target_add($amount, $timestamp) {
     $db = new SQLite3(DB);
-    $query = "CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME, price FLOAT, bill STRING)";
+    $query = "CREATE TABLE IF NOT EXISTS targets (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME)";
     $db->query($query);
-    $query = "SELECT COUNT(*) as count FROM stock WHERE amount=". $amount. " AND timestamp='". $timestamp. "'";
+    $query = "SELECT COUNT(*) as count FROM targets WHERE amount=". $amount. " AND timestamp='". $timestamp. "'";
     $count = $db->querySingle($query);
     if ($count>0)
         return "Chyba (položka již existuje)";
-    $query = "INSERT INTO stock (amount, price, timestamp) VALUES (". $amount. ", ". $price .", '". $timestamp. "')";
+    $query = "INSERT INTO targets (amount, timestamp) VALUES (". $amount. ", ". $timestamp. "')";
     $db->query($query);
     return "OK";
 }
 
-function stock_read() {
+function target_read() {
     $db = new SQLite3(DB);
-    $query = "CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME, price FLOAT, bill STRING)";
+    $query = "CREATE TABLE IF NOT EXISTS targets (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME)";
     $db->query($query);
-    $query = "SELECT * FROM stock ORDER BY timestamp";
+    $query = "SELECT * FROM targets ORDER BY timestamp";
     $result = $db->query($query);
     return $result;
 }
 
-function stock_delete($id_entry) {
+function target_delete($id_entry) {
     $db = new SQLite3(DB);
-    $query = "SELECT * FROM stock WHERE id=". $id_entry;
+    $query = "SELECT * FROM target WHERE id=". $id_entry;
     $result = $db->query($query);
     $row = $result->fetchArray();
-    $query = "DELETE FROM stock WHERE id=". $id_entry;
+    $query = "DELETE FROM target WHERE id=". $id_entry;
     $db->query($query);
     return $row;
 }
