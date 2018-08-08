@@ -89,10 +89,11 @@
 
             <header><h2>Souhrn</h2></header>
             <table>
-                <tr><td>Maká na tom</td><td class='ra'><span id='days_count'></span></td><td>dní</td></tr>
-                <tr><td>Váha zapisovaná</td><td class='ra'><span id='entries_count'></span></td><td>krát</td></tr>
-                <tr><td>Celkem opice shodila</td><td class='ra'><span id='kgsum'></span></td><td>kg</td></tr>
-                <tr><td>Zbývá</td><td class='ra'><span id='kgleft'></span></td><td>kg</td></tr>
+                <tr><td>Maká na tom</td><td class='ra'><span id='days_count'>0</span></td><td>dní</td></tr>
+                <tr><td>Váha zapisovaná</td><td class='ra'><span id='entries_count'>0</span></td><td>krát</td></tr>
+                <tr><td>Celkem opice shodila</td><td class='ra'><span id='kgsum'>0</span></td><td>kg</td></tr>
+                <tr><td>To je</td><td class='ra'><span id='kgday'>0</span></td><td>kg za den</td></tr>
+                <tr><td>Zbývá</td><td class='ra'><span id='kgleft'>0</span></td><td>kg</td></tr>
             </table>
         
             <header><h2>Záznamy</h2></header>
@@ -107,8 +108,14 @@
                 $entries_count = 0;
                 $entries_last_t = 0;
                 $entries_last_v = 0;
+                $entries_started = 0;
+                $entries_start_v = 0;
                 while($row = $db_entries->fetchArray()) {
-                    if ($first) $first = false;
+                    if ($first) {
+                        $first = false;
+                        $entries_started = $row['timestamp'];
+                        $entries_start_v = $row['amount'];
+                    }
                     else echo "\t\t\t";
                     $kg = $row['amount'];
                     $dt = new DateTime($row['timestamp']);//$entry[0]);
@@ -126,7 +133,7 @@
                     echo "<script>document.getElementById('entry_value_input').value = '";
                     echo $entries_last_v. "'</script>". PHP_EOL;
                 }
-                
+
                 #$all_entries = $entries;
             ?>
             </table>
@@ -165,11 +172,20 @@
                     echo "<script>document.getElementById('target_value_input').value = '";
                     echo $v. "'</script>". PHP_EOL;
                 }
+                $kgsum_value = $entries_start_v-$entries_last_v;
+                $kgleft_value = $entries_last_v-$v;
+                $days_count_value = (strtotime($entries_last_t)-strtotime($entries_started))/(60*60*24);
+                $kgday_value = round($kgsum_value / $days_count_value, 1);
             ?>
             </table>
             
+            <script>document.getElementById('entries_count').innerHTML = '<?php echo $entries_count; ?>'</script>
+            <script>document.getElementById('kgsum').innerHTML = '<?php echo $kgsum_value; ?>'</script>
+            <script>document.getElementById('kgleft').innerHTML = '<?php echo $kgleft_value; ?>'</script>
+            <script>document.getElementById('days_count').innerHTML = '<?php echo $days_count_value; ?>'</script>
+            <script>document.getElementById('kgday').innerHTML = '<?php echo $kgday_value; ?>'</script>            
+
             <!--<script>document.getElementById('stock_count').innerHTML = '<?php echo $stock_sum; ?>'</script>
-            <script>document.getElementById('entries_count').innerHTML = '<?php echo count($entries); ?>'</script>
             <script>document.getElementById('kgsum').innerHTML = '<?php echo $kgsum; ?>'</script>
             <script>document.getElementById('stock_left').innerHTML = '<?php echo ($stock_sum - $kgsum); ?>'</script>-->
         </aside>
