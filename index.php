@@ -7,10 +7,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" media="all" href="style/newstyle.css" />
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
-    <title>Spotřeba uhlí</title>
+    <title>Těhotný orangután</title>
 
     <?php
         include "script/utils.php";
+
+        if (!file_exists('data')) { mkdir('data', 0755, true); }
     
         if (isset($_GET["action"])) {
             echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
