@@ -75,27 +75,6 @@ function delete_entry($id_entry) {
     return $row;
 }
 
-function calculate_div($entries) {
-    $entries_div = array();
-    $last_t = 0;
-    $first = true;
-    foreach ($entries as $e) {
-        if ($first) {
-            $last_t = strtotime($e[0]);
-            $first = false;
-        }
-        else {
-            $kg = $e[1];
-            $t = strtotime($e[0]);
-            $dt = ($t - $last_t) / 86400; // sec to day
-            $vdt = $kg / $dt;
-            $last_t = $t;
-            array_push($entries_div, array($t, $vdt));
-        }
-    }
-    return $entries_div;
-}
-
 function target_add($amount, $timestamp) {
     $db = new SQLite3(DB);
     $query = "CREATE TABLE IF NOT EXISTS targets (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME)";
@@ -104,7 +83,7 @@ function target_add($amount, $timestamp) {
     $count = $db->querySingle($query);
     if ($count>0)
         return "Chyba (položka již existuje)";
-    $query = "INSERT INTO targets (amount, timestamp) VALUES (". $amount. ", ". $timestamp. "')";
+    $query = "INSERT INTO targets (amount, timestamp) VALUES (". $amount. ", '". $timestamp. "')";
     $db->query($query);
     return "OK";
 }
@@ -120,10 +99,10 @@ function target_read() {
 
 function target_delete($id_entry) {
     $db = new SQLite3(DB);
-    $query = "SELECT * FROM target WHERE id=". $id_entry;
+    $query = "SELECT * FROM targets WHERE id=". $id_entry;
     $result = $db->query($query);
     $row = $result->fetchArray();
-    $query = "DELETE FROM target WHERE id=". $id_entry;
+    $query = "DELETE FROM targets WHERE id=". $id_entry;
     $db->query($query);
     return $row;
 }

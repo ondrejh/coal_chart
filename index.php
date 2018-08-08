@@ -41,11 +41,11 @@
                 $tdate = $_GET["date"];
                 $tqkg = $_GET["quantity"];
                 echo $tqkg. " kg bude těhotný orangután vážit až porodí hrocha";
-                echo stock_add($tqkg, $tprice, $tdate);
+                echo target_add($tqkg, $tdate);
             }
             if ( $_GET["action"] === "target_delete") {
                 $tid = $_GET["id_entry"];
-                $row = stock_delete($tid);
+                $row = target_delete($tid);
                 echo 'Mažu položku '. $row['timestamp']. ' '. $row['amount']. ' kg z opičích cílů';
             }
             echo "</body></html>";
@@ -130,7 +130,6 @@
                     echo '<input type="hidden" name="action" value="target_delete">';
                     echo '<input type="hidden" name="id_entry" value="'. $row['id']. '">';
                     echo '<input type="submit" value="Smazat"></form></td></tr>'. PHP_EOL;
-                    $stock_sum += $row['amount'];
                     $all_entries[] = array($row['timestamp'], $row['amount']);
                 }
             ?>
@@ -149,42 +148,49 @@
                 var t2col = '#ff6600';
                 var trace1 = {
                     x: [<?php //1, 2, 3],
+                        $first = true;
                         foreach ($entries as $e) {
-                            echo "'". date('Y-m-d', $e[0]). "'";
+                            if ($first)
+                                $first = false;
+                            else
+                                echo ',';
+                            echo "'". $e[0]. "'";
                         }?>],
                     y: [<?php //40, 50, 60],
+                        $first = true;
                         foreach ($entries as $e) {
+                            if ($first)
+                                $first = false;
+                            else
+                                echo ',';
                             echo $e[1];
                         }?>],
-                    name: 'spotřeba [kg/den]',
+                    name: 'hmotnost [kg]',
                     type: 'scatter',
                     line: {
                         color: t1col
                     }
                 };
                 var trace2 = {
-                    x: [<?php //2, 3, 4],
+                    x: [<?php //1, 2, 3],
                         $first = true;
-                        foreach ($t as $tv) {
-                            if ($first) {
+                        foreach ($entries as $e) {
+                            if ($first)
                                 $first = false;
-                            }
-                            else {
-                                echo ", '". $tv. "', " ;
-                            }
-                            echo "'". $tv. "'";
-                        }
-                    ?>],
-                    y: [<?php //4, 5, 6],
+                            else
+                                echo ',';
+                            echo "'". $e[0]. "'";
+                        }?>],
+                    y: [<?php //40, 50, 60],
                         $first = true;
-                        $lsv = 0;
-                        foreach ($s as $sv) {
-                            if ($first) $first=false;
-                            else echo ', '. $lsv. ', ';
-                            echo $sv;
-                            $lsv = $sv;
-                        }
-                    ?>],
+                        foreach ($entries as $e) {
+                            if ($first)
+                                $first = false;
+                            else
+                                echo ',';
+                            echo $e[1];
+                        }?>],
+                    name: 'cíl [kg]',
                     type: 'scatter',
                     line: {
                         color: t2col
@@ -194,15 +200,9 @@
                 var layout = {
                     //title: 'Double Y Axis Example',
                     yaxis: {
-                        title: 'spotřeba [kg / den]',
+                        title: 'hmotnost [kg]',
                         titlefont: {color: t1col},
                         tickfont: {color: t1col}
-                    },
-                    yaxis2: {
-                        title: 'zásoba [kg]',
-                        titlefont: {color: t2col},
-                        tickfont: {color: t2col},
-                        side: 'right'
                     },
                     margin: { t: 0},
                     showlegend: false
