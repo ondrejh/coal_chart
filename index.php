@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" media="all" href="style/newstyle.css" />
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
-    <title>Těhotný orangután</title>
+    <title>Orangután</title>
 
     <?php
         include "script/utils.php";
@@ -74,7 +74,7 @@
                 <?php
                     echo "<td id='tab_date'>". '<input type="date" name="date" value="'. get_date(). '"></td>';
                 ?>
-                <td id='tab_volume'><input type="number" name="quantity" value=95 min=10 max=150 step=0.1 style="width: 4em;">kg</td>
+                <td id='tab_volume'><input id="entry_value_input" type="number" name="quantity" value=95 min=10 max=150 step=0.1 style="width: 4em;">kg</td>
                 <td><input type="submit" value="Zvážit"></td>
             </tr></table></form>
 
@@ -83,7 +83,7 @@
                 <?php
                     echo "<td id='tab_date'>". '<input type="date" name="date" value="'. get_date(). '"></td>';
                 ?>                
-                <td id='tab_volume'><input type="number" name="quantity" value=95 min=10 max=150 step=1 style="width: 4em;">kg</td>
+                <td id='tab_volume'><input id="target_value_input" type="number" name="quantity" value=95 min=10 max=150 step=1 style="width: 4em;">kg</td>
                 <td><input type="submit" value="Doufat"></td>
             </tr></table></form>
 
@@ -104,6 +104,9 @@
                     $entries[] = array($row['timestamp'], $row['amount']);
                 }
                 $first = true;
+                $entries_count = 0;
+                $entries_last_t = 0;
+                $entries_last_v = 0;
                 while($row = $db_entries->fetchArray()) {
                     if ($first) $first = false;
                     else echo "\t\t\t";
@@ -115,15 +118,28 @@
                     echo '<input type="hidden" name="id_entry" value="'. $row['id']. '"> ';
                     echo '<input type="submit" value="Smazat">';
                     echo '</form></td></tr>'. PHP_EOL;
+                    $entries_count += 1;
+                    $entries_last_t = $row['timestamp'];
+                    $entries_last_v = $row['amount'];
                 }
-                $all_entries = $entries;
+                if ($entries_count > 0) {
+                    echo "<script>document.getElementById('entry_value_input').value = '";
+                    echo $entries_last_v. "'</script>". PHP_EOL;
+                }
+                
+                #$all_entries = $entries;
             ?>
             </table>
             
             <header><h2>Cíle</h2></header>
             <table>
             <?php
+                $targets = array();
                 $results = target_read();
+                $first = true;
+                $t = 0;
+                $v = 0;
+                $targets_count = 0;
                 while($row = $results->fetchArray()) {
                     echo "\t\t\t<tr>";
                     echo "<td id='tab_date'>". $row['timestamp']. "</td>";
@@ -132,7 +148,22 @@
                     echo '<input type="hidden" name="action" value="target_delete">';
                     echo '<input type="hidden" name="id_entry" value="'. $row['id']. '">';
                     echo '<input type="submit" value="Smazat"></form></td></tr>'. PHP_EOL;
-                    $all_entries[] = array($row['timestamp'], $row['amount']);
+                    $t = $row['timestamp'];
+                    if ($first) {
+                        $first = false;
+                    }
+                    else {
+                        $targets[] = array($t, $v);
+                    }
+                    $v = $row['amount'];
+                    $targets[] = array($t, $v);
+                    $targets_count += 1;
+                }
+                if (($entries_count > 0) && ($targets_count > 0) && ($entries_last_t>$t))
+                    $targets[] = array($entries_last_t, $v);
+                if ($targets_count > 0) {
+                    echo "<script>document.getElementById('target_value_input').value = '";
+                    echo $v. "'</script>". PHP_EOL;
                 }
             ?>
             </table>
@@ -176,7 +207,7 @@
                 var trace2 = {
                     x: [<?php //1, 2, 3],
                         $first = true;
-                        foreach ($entries as $e) {
+                        foreach ($targets as $e) {
                             if ($first)
                                 $first = false;
                             else
@@ -185,7 +216,7 @@
                         }?>],
                     y: [<?php //40, 50, 60],
                         $first = true;
-                        foreach ($entries as $e) {
+                        foreach ($targets as $e) {
                             if ($first)
                                 $first = false;
                             else
