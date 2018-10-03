@@ -7,11 +7,13 @@
 	<title>Topení - Přikládání</title>
     
     <?php
-        if (isset($_GET["action"])) {
-            if ($_GET["action"]=='add') {
-                #assert values and begin the season here
-            }
-        }
+    if (isset($_GET["date"]) && isset($_GET["time"]) && isset($_GET["amount"])) {
+        #redirect to self in 3 sec
+        echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
+        #assert values and add entry
+        echo "</head><body>" .$_GET["date"] ." ve " .$_GET["time"] ." přiloženo " .$_GET["amount"] ."kg</body></html>";
+        exit();
+    }
     ?>
 </head>
 
@@ -22,10 +24,9 @@
 	</header>
 
     <form method="get">
-        <input type="hidden" name="action" value="add"/>
-        <input type="date" name="date" value="<?php echo date('Y-m-d', time());?>"><br>
-        <input type="time" name="time" value="<?php echo date('H:i', time());?>"><br>
-        <input type="number" name="amount" value=1000 min=0 max=10000 step=10 style="width: 6em;">kg<br>
+        Datum: <input type="date" name="date" value="<?php echo date('Y-m-d', time());?>"><br>
+        Čas: <input type="time" name="time" value="<?php echo date('H:i', time());?>"><br>
+        Množství: <input type="number" name="amount" value=120 min=0 max=200 step=5 style="width: 6em;">kg<br>
         <input type="submit" value="Potvrdit">
     </form>
     
