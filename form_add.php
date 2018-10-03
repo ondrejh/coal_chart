@@ -7,11 +7,13 @@
 	<title>Topení - Přikládání</title>
     
     <?php
+    include "script/utils.php";
     if (isset($_GET["date"]) && isset($_GET["time"]) && isset($_GET["amount"])) {
         #redirect to self in 3 sec
         echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
         #assert values and add entry
-        echo "</head><body>" .$_GET["date"] ." ve " .$_GET["time"] ." přiloženo " .$_GET["amount"] ."kg</body></html>";
+        echo "</head><body>" .$_GET["date"] ." ve " .$_GET["time"] ." přiloženo " .$_GET["amount"] ."kg ... ";
+        echo insert_entry($_GET["amount"], $_GET["date"] ." ". $_GET["time"]) ."</body></html>";
         exit();
     }
     ?>

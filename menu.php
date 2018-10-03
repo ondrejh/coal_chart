@@ -16,6 +16,7 @@
 				<li><a href="form_add.php">Přiložit</a></li>
 				<li><a href="form_buy.php">Naskladnit</a></li>
 				<li><a href="form_end.php">Ukončit sezónu</a></li>
+                <li><a href="entries.php">Seznam</a></li>
 			</ul>
 		</nav>
 	</header>

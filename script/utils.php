@@ -1,8 +1,32 @@
 <?php
 
 define ("DIRECTORY", "./data/");
+define ("DB", DIRECTORY. "heating.sql");
+
+function insert_entry($amount, $timestamp){
+    $db = new SQLite3(DB);
+    $query = "CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME)";
+    $db->query($query);
+    $query = "SELECT COUNT(*) as count FROM entries WHERE amount=". $amount. " AND timestamp='". $timestamp. "'";
+    $count = $db->querySingle($query);
+    if ($count>0)
+        return "Chyba (položka již existuje)";
+    $query = "INSERT INTO entries (amount, timestamp) VALUES (". $amount. ", '". $timestamp. "')";
+    $db->query($query);
+    return "OK";
+}
+
+function delete_entry($id_entry) {
+    $db = new SQLite3(DB);
+    $query = "SELECT * FROM entries WHERE id=". $id_entry;
+    $result = $db->query($query);
+    $row = $result->fetchArray();
+    $query = "DELETE FROM entries WHERE id=". $id_entry;
+    $db->query($query);
+    return $row;
+}
+
 define ("FILE", DIRECTORY. "entries.txt");
-define ("DB", DIRECTORY. "entries.sql");
 
 function get_date() {
     return date('Y-m-d', time());
@@ -44,19 +68,6 @@ function array_sort($array, $on, $order=SORT_ASC)
     return $new_array;
 }
 
-function insert_entry($amount, $timestamp){
-    $db = new SQLite3(DB);
-    $query = "CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME)";
-    $db->query($query);
-    $query = "SELECT COUNT(*) as count FROM entries WHERE amount=". $amount. " AND timestamp='". $timestamp. "'";
-    $count = $db->querySingle($query);
-    if ($count>0)
-        return "Chyba (položka již existuje)";
-    $query = "INSERT INTO entries (amount, timestamp) VALUES (". $amount. ", '". $timestamp. "')";
-    $db->query($query);
-    return "OK";
-}
-
 function load_entries() {
     $db = new SQLite3(DB);
     $query = "CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME)";
@@ -92,16 +103,6 @@ function convert_filebased_to_sqlite() {
         }
     }
     return false;
-}
-
-function delete_entry($id_entry) {
-    $db = new SQLite3(DB);
-    $query = "SELECT * FROM entries WHERE id=". $id_entry;
-    $result = $db->query($query);
-    $row = $result->fetchArray();
-    $query = "DELETE FROM entries WHERE id=". $id_entry;
-    $db->query($query);
-    return $row;
 }
 
 function calculate_div($entries) {
@@ -147,14 +148,14 @@ function stock_read() {
     return $result;
 }
 
-function stock_delete($id_entry) {
-    $db = new SQLite3(DB);
-    $query = "SELECT * FROM stock WHERE id=". $id_entry;
-    $result = $db->query($query);
-    $row = $result->fetchArray();
-    $query = "DELETE FROM stock WHERE id=". $id_entry;
-    $db->query($query);
-    return $row;
-}
+#function stock_delete($id_entry) {
+#    $db = new SQLite3(DB);
+#    $query = "SELECT * FROM stock WHERE id=". $id_entry;
+#    $result = $db->query($query);
+#    $row = $result->fetchArray();
+#    $query = "DELETE FROM stock WHERE id=". $id_entry;
+#    $db->query($query);
+#    return $row;
+#}
 
 ?>

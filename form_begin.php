@@ -9,6 +9,7 @@
     <?php
         if (isset($_GET["action"])) {
             if ($_GET["action"]=='season_begin') {
+                
                 #assert values and begin the season here
             }
         }
@@ -25,8 +26,8 @@
         <input type="hidden" name="action" value="season_begin"/>
         Datum: <input type="date" name="date" value="<?php echo date('Y-m-d', time());?>"><br>
         Čas: <input type="time" name="time" value="<?php echo date('H:i', time());?>"><br>
-        Zbytek na skladě: <input type="number" name="stock" value=1000 min=0 max=10000 step=10 style="width: 6em;">kg<br>
         Zbytek v zásobníku: <input type="number" name="stack" value=50 min=0 max=200 step=10 style="width: 6em;">kg<br>
+        Zbytek na skladě: <input type="number" name="stock" value=1000 min=0 max=10000 step=10 style="width: 6em;">kg<br>
         Cena zbylých zásob: <input type="number" name="price" value=15000 min=0 step=any style="width: 6em;">kč<br>
         <input type="submit" value="Potvrdit">
     </form>
