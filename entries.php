@@ -48,7 +48,7 @@
                     echo '<tr><td>' .$row['timestamp'] .'</td><td>' .$row['amount'] .'</td><td><form>';
                     echo '<input type="hidden" name="action" value="delete">';
                     echo '<input type="hidden" name="id_entry" value="'. $row['id']. '"> ';
-                    echo '<input type="submit" value="Smazat"></form></td><td><form>';
+                    echo '<input type="submit" value="Smazat"></form></td><td><form action="/form_add.php">';
                     echo '<input type="hidden" name="action" value="edit">';
                     echo '<input type="hidden" name="id_entry" value="'. $row['id']. '">';
                     echo '<input type="submit" value="Editovat"></form></td></tr>';
@@ -59,13 +59,8 @@
 		
 	</section>
 
-	<aside>
-		<h2>About section</h2>
-		<p>Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
-	</aside>
-
 	<footer>
-		<p>Copyright 2009 Your name</p>
+		<p>Copyleft 2018 Ondřej</p>
 	</footer>
 
 </body>

@@ -42,12 +42,16 @@
 	</section>
 
 	<aside>
-		<h2>About section</h2>
-		<p>Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+		<h2>Poznámky</h2>
+		<ul>
+            <li>Další krok: uložit editovaný záznam.</li>
+            <li>Ze stránky přiložit-přiloženo skočit zpět do menu nebo do seznamu.</li>
+            <li>Tlačítko Editovat v seznamu směřovat na přiložit ve zvláštním módu editace</li>
+        </ul>
 	</aside>
 
 	<footer>
-		<p>Copyright 2009 Your name</p>
+		<p>Copyleft 2018 Ondřej</p>
 	</footer>
 
 </body>

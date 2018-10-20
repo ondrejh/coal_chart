@@ -16,6 +16,14 @@ function insert_entry($amount, $timestamp){
     return "OK";
 }
 
+function get_entry($id_entry) {
+    $db = new SQLite3(DB);
+    $query = "SELECT * FROM entries WHERE id=". $id_entry;
+    $result = $db->query($query);
+    $row = $result->fetchArray();
+    return $row;
+}
+
 function delete_entry($id_entry) {
     $db = new SQLite3(DB);
     $query = "SELECT * FROM entries WHERE id=". $id_entry;
