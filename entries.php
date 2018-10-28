@@ -60,6 +60,10 @@
 	</section>
 
 	<footer>
+        <h3>Todo</h3>
+        <ul>
+            <li>Přidat odkaz na vzdálenou správu do hlavní lišty.</li>
+        </ul>
 		<p>Copyleft 2018 Ondřej</p>
 	</footer>
 

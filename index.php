@@ -10,7 +10,7 @@
     <title>Spotřeba uhlí</title>
 </head>
 
-<body>
+<body class='screen'>
     <?php
     include "script/utils.php";
     menu();
@@ -19,7 +19,7 @@
     <section>
 
 		<article id='charts'>
-            <header><h2>Spotřeba uhlí</h2></header>
+            <!--<header><h2>Spotřeba uhlí</h2></header>-->
             <?php
                 $db_entries = load_entries();
                 $entries = array();
@@ -127,5 +127,13 @@
             </script>
 		</article>
 	</section>
+    
+	<footer>
+        <h3>Todo</h3>
+        <ul>
+            <li>Dodělat mobilní verze formulářů.</li>
+        </ul>
+		<p>Copyleft 2018 Ondřej</p>
+	</footer>
     
 </body> </html>

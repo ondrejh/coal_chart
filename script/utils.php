@@ -49,17 +49,47 @@ function menu(){
     echo "\t<a class='button' href='form_add.php'>Přiložit</a>";
     echo "\t<a class='button' href='form_buy.php'>Naskladnit</a>";
     echo "\t<a class='button' href='entries.php'>Seznam</a>";
+    echo "\t<a class='button' href='http://zdalnie.techsterowniki.pl/index.php'>Správa</a>";
     echo "</nav></header>";
 }
 
-define ("FILE", DIRECTORY. "entries.txt");
-
-function get_date() {
-    return date('Y-m-d', time());
+function load_entries() {
+    $db = new SQLite3(DB);
+    $query = "CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME)";
+    $db->query($query);
+    $query = "SELECT * FROM entries ORDER BY timestamp";
+    $result = $db->query($query);
+    return $result;
 }
 
-function get_time() {
-    return date('H:i', time());
+function stock_read() {
+    $db = new SQLite3(DB);
+    $query = "CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME, price FLOAT, bill STRING)";
+    $db->query($query);
+    $query = "SELECT * FROM stock ORDER BY timestamp";
+    $result = $db->query($query);
+    return $result;
+}
+
+function calculate_div($entries) {
+    $entries_div = array();
+    $last_t = 0;
+    $first = true;
+    foreach ($entries as $e) {
+        if ($first) {
+            $last_t = strtotime($e[0]);
+            $first = false;
+        }
+        else {
+            $kg = $e[1];
+            $t = strtotime($e[0]);
+            $dt = ($t - $last_t) / 86400; // sec to day
+            $vdt = $kg / $dt;
+            $last_t = $t;
+            array_push($entries_div, array($t, $vdt));
+        }
+    }
+    return $entries_div;
 }
 
 #array sorting thanks to https://secure.php.net/manual/en/function.sort.php
@@ -94,13 +124,14 @@ function array_sort($array, $on, $order=SORT_ASC)
     return $new_array;
 }
 
-function load_entries() {
-    $db = new SQLite3(DB);
-    $query = "CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME)";
-    $db->query($query);
-    $query = "SELECT * FROM entries ORDER BY timestamp";
-    $result = $db->query($query);
-    return $result;
+/*define ("FILE", DIRECTORY. "entries.txt");
+
+function get_date() {
+    return date('Y-m-d', time());
+}
+
+function get_time() {
+    return date('H:i', time());
 }
 
 function convert_filebased_to_sqlite() {
@@ -131,27 +162,6 @@ function convert_filebased_to_sqlite() {
     return false;
 }
 
-function calculate_div($entries) {
-    $entries_div = array();
-    $last_t = 0;
-    $first = true;
-    foreach ($entries as $e) {
-        if ($first) {
-            $last_t = strtotime($e[0]);
-            $first = false;
-        }
-        else {
-            $kg = $e[1];
-            $t = strtotime($e[0]);
-            $dt = ($t - $last_t) / 86400; // sec to day
-            $vdt = $kg / $dt;
-            $last_t = $t;
-            array_push($entries_div, array($t, $vdt));
-        }
-    }
-    return $entries_div;
-}
-
 function stock_add($amount, $price, $timestamp) {
     $db = new SQLite3(DB);
     $query = "CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME, price FLOAT, bill STRING)";
@@ -165,15 +175,6 @@ function stock_add($amount, $price, $timestamp) {
     return "OK";
 }
 
-function stock_read() {
-    $db = new SQLite3(DB);
-    $query = "CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME, price FLOAT, bill STRING)";
-    $db->query($query);
-    $query = "SELECT * FROM stock ORDER BY timestamp";
-    $result = $db->query($query);
-    return $result;
-}
-
 #function stock_delete($id_entry) {
 #    $db = new SQLite3(DB);
 #    $query = "SELECT * FROM stock WHERE id=". $id_entry;
@@ -182,6 +183,6 @@ function stock_read() {
 #    $query = "DELETE FROM stock WHERE id=". $id_entry;
 #    $db->query($query);
 #    return $row;
-#}
+#}*/
 
 ?>

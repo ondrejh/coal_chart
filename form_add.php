@@ -3,8 +3,12 @@
 <html>
 
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Topení - Přikládání</title>
+    <meta charset="utf-8"/>
+    <script src="script/plotly-latest.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" media="all" href="style/newstyle.css" />
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+    <title>Spotřeba uhlí - Přikládání</title>
     
     <?php
     include "script/utils.php";
@@ -23,7 +27,7 @@
     ?>
 </head>
 
-<body>
+<body class='form'>
 
 	<header>
         <h1 id='header'>Přiložit</h1>
@@ -31,10 +35,13 @@
 
     <form method="get">
         <?php if (isset($_GET["id_entry"])) {echo "<input type='hidden' name='id' value='". $_GET["id_entry"]. "'>";} ?>
-        Datum: <input id="date" type="date" name="date" value="<?php echo date('Y-m-d', time());?>"><br>
-        Čas: <input id="time" type="time" name="time" value="<?php echo date('H:i', time());?>"><br>
-        Množství: <input id="amount" type="number" name="amount" value=120 min=0 max=200 step=5 style="width: 6em;">kg<br>
-        <input id="submit" type="submit" value="Potvrdit">
+        Datum:<br>
+        <input class="entry" id="date" type="date" name="date" value="<?php echo date('Y-m-d', time());?>">
+        Čas:<br>
+        <input class="entry" id="time" type="time" name="time" value="<?php echo date('H:i', time());?>">
+        Množství [kg]:<br>
+        <input class="entry" id="amount" type="number" name="amount" value=120 min=0 max=200 step=5>
+        <input class="btn_ok" id="submit" type="submit" value="Potvrdit">
     </form>
     
     <?php
@@ -50,7 +57,7 @@
     }
     ?>
     
-    <a href="index.php">Zrušit</a>
+    <a class="btn_cancel" href="index.php">Zrušit</a>
     
 </body>
 
