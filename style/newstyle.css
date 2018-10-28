@@ -2,15 +2,41 @@ td.ra {
     text-align: right;
 }
 
+.button {
+    border-radius: 8px;
+    display: inline-block;
+    font: bold 12px Arial, Helvetica, Clean, sans-serif;
+    margin: 0 5px 5px 0;
+    padding: 10px 20px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    background: #becbd6;
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#becbd6), to(#8da5b7));
+    background: -moz-linear-gradient(#becbd6, #8da5b7);
+    background: linear-gradient(#becbd6, #8da5b7);
+    border: solid 1px #a1aeb7;
+    border-bottom: solid 3px #62727e;
+    box-shadow: inset 0 0 0 1px #d8e0e6;
+    color: #515f6a;
+    text-shadow: 0 1px 0 #c4d0da;
+    outline: none;
+}
+
+body {
+    position: fixed;
+    width: 100%;
+    max-width: 850px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
 article {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    width: 850px;
+    width: 100%;
 }
 
 aside {
-    position: absolute;
+    /*position: absolute;
     left: 850px;
-    top: 0px;
+    top: 0px;*/
 }

@@ -14,6 +14,7 @@
         #assert values and add entry
         echo "</head><body>" .$_GET["date"] ." ve " .$_GET["time"] ." přiloženo " .$_GET["amount"] ."kg ... ";
         if (isset($_GET["id"])) {
+            echo edit_entry($_GET["id"], $_GET["amount"], $_GET["date"] ." ". $_GET["time"]);
             echo "Editace</body></html>";
         }
         else { echo insert_entry($_GET["amount"], $_GET["date"] ." ". $_GET["time"]) ."</body></html>"; }
@@ -49,7 +50,7 @@
     }
     ?>
     
-    <a href="menu.php">Zrušit</a>
+    <a href="index.php">Zrušit</a>
     
 </body>
 

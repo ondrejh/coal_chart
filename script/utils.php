@@ -34,6 +34,24 @@ function delete_entry($id_entry) {
     return $row;
 }
 
+function edit_entry($id, $amount, $timestamp){
+    $db = new SQLite3(DB);
+    $query = "UPDATE entries SET amount=". $amount. " WHERE ID =". $id;
+    $db->query($query);
+    $query = "UPDATE entries SET timestamp='". $timestamp. "' WHERE ID =". $id;
+    $db->query($query);
+    return "OK";
+}
+
+function menu(){
+    echo "<header><nav>";
+    echo "\t<a class='button' href='index.php'>Graf</a>";
+    echo "\t<a class='button' href='form_add.php'>Přiložit</a>";
+    echo "\t<a class='button' href='form_buy.php'>Naskladnit</a>";
+    echo "\t<a class='button' href='entries.php'>Seznam</a>";
+    echo "</nav></header>";
+}
+
 define ("FILE", DIRECTORY. "entries.txt");
 
 function get_date() {
