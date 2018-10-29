@@ -14,7 +14,7 @@
     include "script/utils.php";
     if (isset($_GET["date"]) && isset($_GET["time"]) && isset($_GET["amount"])) {
         #redirect to self in 3 sec
-        echo "<meta http-equiv='refresh' content='3;url=". basename($_SERVER['PHP_SELF'])."'/></head><body>";
+        echo "<meta http-equiv='refresh' content='3;url=index.php'/></head><body>";
         #assert values and add entry
         echo "</head><body>" .$_GET["date"] ." ve " .$_GET["time"] ." přiloženo " .$_GET["amount"] ."kg ... ";
         if (isset($_GET["id"])) {
@@ -33,6 +33,7 @@
         <h1 id='header'>Přiložit</h1>
 	</header>
 
+    <section><article>
     <form method="get">
         <?php if (isset($_GET["id_entry"])) {echo "<input type='hidden' name='id' value='". $_GET["id_entry"]. "'>";} ?>
         Datum:<br>
@@ -41,7 +42,8 @@
         <input class="entry" id="time" type="time" name="time" value="<?php echo date('H:i', time());?>">
         Množství [kg]:<br>
         <input class="entry" id="amount" type="number" name="amount" value=120 min=0 max=200 step=5>
-        <input class="btn_ok" id="submit" type="submit" value="Potvrdit">
+        <input class="button btnok" id="submit" type="submit" value="Potvrdit">
+        <a class="button btncancel" href="index.php">Zrušit</a>
     </form>
     
     <?php
@@ -57,8 +59,5 @@
     }
     ?>
     
-    <a class="btn_cancel" href="index.php">Zrušit</a>
-    
-</body>
-
-</html>
+    </article></section>
+</body></html>

@@ -131,6 +131,8 @@
 	<footer>
         <h3>Todo</h3>
         <ul>
+            <li>Přidat seznam nákupů.</li>
+            <li>Umožnit editaci nákupů.</li>
             <li>Dodělat mobilní verze formulářů.</li>
         </ul>
 		<p>Copyleft 2018 Ondřej</p>

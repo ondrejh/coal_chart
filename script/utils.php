@@ -47,8 +47,8 @@ function menu(){
     echo "<header><nav>";
     echo "\t<a class='button' href='index.php'>Graf</a>";
     echo "\t<a class='button' href='form_add.php'>Přiložit</a>";
-    echo "\t<a class='button' href='form_buy.php'>Naskladnit</a>";
-    echo "\t<a class='button' href='entries.php'>Seznam</a>";
+    echo "\t<a class='button' href='form_buy.php'>Nákup</a>";
+    echo "\t<a class='button' href='entries.php'>Seznamy</a>";
     echo "\t<a class='button' href='http://zdalnie.techsterowniki.pl/index.php'>Správa</a>";
     echo "</nav></header>";
 }
@@ -69,6 +69,19 @@ function stock_read() {
     $query = "SELECT * FROM stock ORDER BY timestamp";
     $result = $db->query($query);
     return $result;
+}
+
+function stock_add($amount, $price, $timestamp) {
+    $db = new SQLite3(DB);
+    $query = "CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY, amount FLOAT, timestamp DATETIME, price FLOAT, bill STRING)";
+    $db->query($query);
+    $query = "SELECT COUNT(*) as count FROM stock WHERE amount=". $amount. " AND timestamp='". $timestamp. "'";
+    $count = $db->querySingle($query);
+    if ($count>0)
+        return "Chyba (položka již existuje)";
+    $query = "INSERT INTO stock (amount, price, timestamp) VALUES (". $amount. ", ". $price .", '". $timestamp. "')";
+    $db->query($query);
+    return "OK";
 }
 
 function calculate_div($entries) {
